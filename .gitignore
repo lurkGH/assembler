@@ -363,7 +363,6 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Appended
-*.sln
 *.vcxproj
 *.vcxproj.filters
 /HackAssemblerF24.vcxproj
