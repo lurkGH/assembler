@@ -362,8 +362,3 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-# Appended
-*.vcxproj
-*.vcxproj.filters
-/HackAssemblerF24.vcxproj
-/HackAssemblerF24.vcxproj.filters
