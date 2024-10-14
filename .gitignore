@@ -366,3 +366,5 @@ FodyWeavers.xsd
 *.sln
 *.vcxproj
 *.vcxproj.filters
+/HackAssemblerF24.vcxproj
+/HackAssemblerF24.vcxproj.filters
