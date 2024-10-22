@@ -127,11 +127,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bin2Hex.cpp" />
+    <ClCompile Include="Computations.cpp" />
     <ClCompile Include="Destinations.cpp" />
     <ClCompile Include="HackAssemblerF24.cpp" />
     <ClCompile Include="Jumps.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bin2Hex.h" />
+    <ClInclude Include="Computations.h" />
     <ClInclude Include="Destinations.h" />
     <ClInclude Include="Jumps.h" />
   </ItemGroup>

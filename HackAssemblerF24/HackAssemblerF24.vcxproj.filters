@@ -24,12 +24,24 @@
     <ClCompile Include="Jumps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Computations.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bin2Hex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Destinations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Jumps.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Computations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bin2Hex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
