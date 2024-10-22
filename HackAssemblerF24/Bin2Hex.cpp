@@ -1,7 +1,4 @@
 #include "Bin2Hex.h"
-#include <string>
-
-using namespace std;
 
 Bin2Hex::Bin2Hex() {
 	bin2Hex.insert(pair<string, char>("0000", '0'));

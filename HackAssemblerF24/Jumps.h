@@ -7,7 +7,6 @@ class Jumps
 {
 private:
 	map<string, string> jumps;
-
 public:
 	Jumps();
 	string find(string str);

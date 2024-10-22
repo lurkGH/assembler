@@ -1,7 +1,6 @@
 #pragma once
-#include <string>
 #include <map>
-
+#include <string>
 using namespace std;
 
 class Bin2Hex
