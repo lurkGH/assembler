@@ -3,11 +3,11 @@
 #include <string>
 using namespace std;
 
-class Destinations
+class Computations
 {
 private:
-	map<string, string> destinations;
+	map<string, string> computations;
 public:
-	Destinations();
+	Computations();
 	string find(string);
 };
