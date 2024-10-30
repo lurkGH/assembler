@@ -1,7 +1,8 @@
 #include "Destinations.h"
+#include <boost/algorithm/string.hpp>
 
 Destinations::Destinations() {
-	destinations.insert(pair<string, string>("null", "000"));
+	destinations.insert(pair<string, string>("NULL", "000"));
 	destinations.insert(pair<string, string>("M", "001"));
 	destinations.insert(pair<string, string>("D", "010"));
 	destinations.insert(pair<string, string>("MD", "011"));
@@ -15,6 +16,7 @@ string Destinations::find(string str) {
 	map<string, string>::iterator it;
 
 	it = destinations.find(str);
+	boost::to_upper(str);
 
 	if (it != destinations.end()) {
 		return it->second;

@@ -1,14 +1,14 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <map>
+#include <string>
 #include "Destinations.h"
 #include "Jumps.h"
 #include "Computations.h"
 #include "Bin2Hex.h"
 #include <boost/algorithm/string.hpp>
 using namespace std;
-
-void testInstructions(Destinations destInst, Jumps jmpInst, Computations cmpInst);
 
 int main(int argc, char* argv[])
 {
@@ -72,58 +72,51 @@ int main(int argc, char* argv[])
 			instructions.push_back(inStr);
 			lineCount++;
 		}
-		// DEBUG
-		cout << inStr << endl;
+	}
 
-		// Pass 2
-		for (string inst : instructions) {
-			if (inst.substr(0, 1) != "@") {
-				// C instruction:
-				// D=M;jgt
-				// D;jgt
+	// Pass 2
+	for (string inst : instructions) {
+		// C instructions:
+		if (inst.substr(0, 1) != "@") {
+			int eqLoc = inst.find("=");
+			int scLoc = inst.find(";");
 
-				int eqLoc = inst.find("=");
-				int scLoc = inst.find(";");
+			// D=M (found = but not ;)
+			if (eqLoc != string::npos && scLoc == string::npos) {
+				dest = inst.substr(0, eqLoc);
+				comp = inst.substr(eqLoc + 1, inst.length() - (eqLoc + 1));
+				jump = "NULL";
+			}
 
-				// D=M (found = but not ;)
-				if (eqLoc != string::npos && scLoc == string::npos) {
-					dest = inst.substr(0, eqLoc);
-					comp = inst.substr(eqLoc + 1, inst.length() - eqLoc);
-					jump = "000";
-				}
+			// D=M;jmp (found = and ;)
+			if (eqLoc != string::npos && scLoc != string::npos) {
+				dest = inst.substr(0, eqLoc);
+				comp = inst.substr(eqLoc + 1, scLoc - (eqLoc + 1));
+				jump = inst.substr(scLoc + 1, inst.length() - (scLoc + 1));
+			}
 
-				if (comp.find("M") != string::npos) {
-					prefix = "1001";
-				}
-				else {
-					prefix = "1000";
-				}
+			// D;jgt (found ; but not =)
+			if (eqLoc == string::npos && scLoc != string::npos) {
+				dest = "NULL";
+				comp = inst.substr(0, scLoc);
+				jump = inst.substr(scLoc + 1, inst.length() - (scLoc + 1));
+			}
 
-				// DEBUG
-				string test = prefix + compTbl.find(comp) + dstTbl.find(dest) + jump;
-				cout << test << endl;
-
-
-				binaryInstructions.push_back(prefix + compTbl.find(comp) + dstTbl.find(dest) + jump);
+			if (comp.find("M") != string::npos) {
+				prefix = "1001";
 			}
 			else {
-				// A instruction:
-
+				prefix = "1000";
 			}
+
+			binaryInstructions.push_back(prefix + compTbl.find(comp) + dstTbl.find(dest) + jmpTbl.find(jump));
 		}
+		else {
+			// A instruction:
 
+		}
 	}
-}
-void testInstructions(Destinations destInst, Jumps jmpInst, Computations cmpInst) {
-	cout << "Testing Destination Instructions:" << endl;
-	cout << destInst.find("AMD") << endl;
-	cout << destInst.find("error") << endl << endl;
-
-	cout << "Testing Jump Instructions:" << endl;
-	cout << jmpInst.find("JGT") << endl;
-	cout << jmpInst.find("error") << endl << endl;
-
-	cout << "Testing Computation Instructions:" << endl;
-	cout << cmpInst.find("!D") << endl;
-	cout << cmpInst.find("error") << endl << endl;
+	for (string inst : binaryInstructions) {
+		cout << inst << endl;
+	}
 }
