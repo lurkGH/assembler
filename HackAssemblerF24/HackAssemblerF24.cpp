@@ -21,7 +21,10 @@ int main(int argc, char* argv[])
 	vector<string> binaryInstructions;
 	map<string, int> labels;
 	map<string, int>::iterator itLabels;
+	map<string, int> symbols;
+	map<string, int>::iterator itSymbols;
 	int lineCount = 0;
+	int memoryAddress = 100;
 	string dest;
 	string comp;
 	string jump;
@@ -113,9 +116,45 @@ int main(int argc, char* argv[])
 		}
 		else {
 			// A instruction:
+			string addrName = inst.substr(1, inst.length() - 1);
+			itLabels = labels.find(addrName);
+			itSymbols = symbols.find(addrName);
+			char symb[16] = { 0 };
 
+			// @Loop
+			// @X
+
+			// If address exists in neither
+			if (itLabels == labels.end() && itSymbols == symbols.end()) {
+				symbols.insert(pair<string, int>(addrName, memoryAddress));
+				_itoa_s(memoryAddress, symb, 2);
+				string str(symb);
+				string binStr = string(16 - str.length(), '0') + str;
+				binaryInstructions.push_back(binStr);
+				memoryAddress++;
+			}
+			// If address exists only in the Labels table
+			else if (itLabels != labels.end() && itSymbols == symbols.end()) {
+
+			}
+			// If address exists only in the Symbols table
+			else if (itLabels == labels.end() && itSymbols != symbols.end()) {
+				int addr = itSymbols->second;
+				_itoa_s(addr, symb, 2);
+				string str(symb);
+				string binStr = string(16 - str.length(), '0') + str;
+				binaryInstructions.push_back(binStr);
+				cout << "test" << endl;
+				cout << binStr << endl;
+			}
+			// If address exists in both tables (shouldn't happen)
+			else {
+
+			}
 		}
 	}
+
+	// DEBUG
 	for (string inst : binaryInstructions) {
 		cout << inst << endl;
 	}
