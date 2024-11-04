@@ -115,14 +115,11 @@ int main(int argc, char* argv[])
 			binaryInstructions.push_back(prefix + compTbl.find(comp) + dstTbl.find(dest) + jmpTbl.find(jump));
 		}
 		else {
-			// A instruction:
+			// A instructions:
 			string addrName = inst.substr(1, inst.length() - 1);
 			itLabels = labels.find(addrName);
 			itSymbols = symbols.find(addrName);
-			char symb[16] = { 0 };
-
-			// @Loop
-			// @X
+			char symb[16] = {0};
 
 			// If address exists in neither
 			if (itLabels == labels.end() && itSymbols == symbols.end()) {
@@ -135,7 +132,7 @@ int main(int argc, char* argv[])
 			}
 			// If address exists only in the Labels table
 			else if (itLabels != labels.end() && itSymbols == symbols.end()) {
-
+				// WIP
 			}
 			// If address exists only in the Symbols table
 			else if (itLabels == labels.end() && itSymbols != symbols.end()) {
@@ -144,12 +141,10 @@ int main(int argc, char* argv[])
 				string str(symb);
 				string binStr = string(16 - str.length(), '0') + str;
 				binaryInstructions.push_back(binStr);
-				cout << "test" << endl;
-				cout << binStr << endl;
 			}
 			// If address exists in both tables (shouldn't happen)
 			else {
-
+				// WIP
 			}
 		}
 	}
