@@ -10,6 +10,15 @@
 #include <boost/algorithm/string.hpp>
 using namespace std;
 
+vector<string> instructions;
+vector<string> binaryInstructions;
+map<string, int> labels;
+map<string, int>::iterator itLabels;
+map<string, int> symbols;
+map<string, int>::iterator itSymbols;
+
+void convertToBinary(int value);
+
 int main(int argc, char* argv[])
 {
 	Destinations dstTbl;
@@ -17,12 +26,6 @@ int main(int argc, char* argv[])
 	Computations compTbl;
 	Bin2Hex bin2HexTbl;
 	string inFileName, outFileName, inStr;
-	vector<string> instructions;
-	vector<string> binaryInstructions;
-	map<string, int> labels;
-	map<string, int>::iterator itLabels;
-	map<string, int> symbols;
-	map<string, int>::iterator itSymbols;
 	int lineCount = 0;
 	int memoryAddress = 100;
 	string dest;
@@ -38,8 +41,24 @@ int main(int argc, char* argv[])
 		outFileName = "C:\\mydata\\" + string(argv[2]);
 	}
 
+	// Opens the input file
 	ifstream inFile(inFileName);
+	// Opens the output file
+	ofstream outFile(outFileName);
 
+	// check if file was successfully opened
+	if (!inFile) {
+		cerr << "Error: Input file '" << inFileName << "' not found." << endl;
+		return 1;
+	}
+
+	// check if file was successfully opened
+	if (!outFile) {
+		cerr << "Error: Output file '" << outFileName << "' not found." << endl;
+		return 1;
+	}
+
+#pragma region Pass1
 	// Pass 1
 	// Processes comments and labels
 	while (getline(inFile, inStr, '\n')) {
@@ -76,7 +95,9 @@ int main(int argc, char* argv[])
 			lineCount++;
 		}
 	}
+#pragma endregion Pass1
 
+#pragma region Pass2
 	// Pass 2
 	for (string inst : instructions) {
 		// C instructions:
@@ -119,28 +140,29 @@ int main(int argc, char* argv[])
 			string addrName = inst.substr(1, inst.length() - 1);
 			itLabels = labels.find(addrName);
 			itSymbols = symbols.find(addrName);
-			char symb[16] = {0};
 
 			// If address exists in neither
 			if (itLabels == labels.end() && itSymbols == symbols.end()) {
+				// Save address of variable to the symbols table
 				symbols.insert(pair<string, int>(addrName, memoryAddress));
-				_itoa_s(memoryAddress, symb, 2);
-				string str(symb);
-				string binStr = string(16 - str.length(), '0') + str;
-				binaryInstructions.push_back(binStr);
+				convertToBinary(memoryAddress);
+
+				// Increment memory address for use with next variable name
 				memoryAddress++;
 			}
 			// If address exists only in the Labels table
 			else if (itLabels != labels.end() && itSymbols == symbols.end()) {
-				// WIP
+				// Get linie number of Label from labels table
+				int lineNumber = itLabels->second;
+
+				convertToBinary(lineNumber);
 			}
 			// If address exists only in the Symbols table
 			else if (itLabels == labels.end() && itSymbols != symbols.end()) {
+				// Get memory adddress of variable from symbols table
 				int addr = itSymbols->second;
-				_itoa_s(addr, symb, 2);
-				string str(symb);
-				string binStr = string(16 - str.length(), '0') + str;
-				binaryInstructions.push_back(binStr);
+
+				convertToBinary(addr);
 			}
 			// If address exists in both tables (shouldn't happen)
 			else {
@@ -148,9 +170,27 @@ int main(int argc, char* argv[])
 			}
 		}
 	}
+#pragma endregion Pass2
 
-	// DEBUG
+#pragma region Pass3
+	// Pass 3
+	// Generate output file
+	outFile << "v2.0 raw" << endl;
+
 	for (string inst : binaryInstructions) {
-		cout << inst << endl;
+		// Convert to hex and write
+		outFile << bin2HexTbl.Convert16Bin2Hex(inst) << endl;
 	}
+	outFile.close();
+
+#pragma endregion Pass3
+}
+
+void convertToBinary(int value) {
+	// Convert to binary and write to binaryInstructions vector
+	char symb[16] = { 0 };
+	_itoa_s(value, symb, 2);
+	string str(symb);
+	string binStr = string(16 - str.length(), '0') + str;
+	binaryInstructions.push_back(binStr);
 }
