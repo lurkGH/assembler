@@ -8,6 +8,7 @@
 #include "Computations.h"
 #include "Bin2Hex.h"
 #include <boost/algorithm/string.hpp>
+#include <chrono>
 using namespace std;
 
 vector<string> instructions;
@@ -19,8 +20,8 @@ map<string, int>::iterator itSymbols;
 
 void convertToBinary(int value);
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
+	auto start = std::chrono::high_resolution_clock::now();
 	Destinations dstTbl;
 	Jumps jmpTbl;
 	Computations compTbl;
@@ -182,6 +183,45 @@ int main(int argc, char* argv[])
 		outFile << bin2HexTbl.Convert16Bin2Hex(inst) << endl;
 	}
 	outFile.close();
+
+	ofstream lstFile(outFileName + ".lst");
+
+	lstFile << "List file for: " << inFileName << endl;
+	lstFile << endl << endl << "**** Code ****" << endl;
+
+	for (int i = 0; i < binaryInstructions.size(); i++) {
+		lstFile << binaryInstructions[i] << "\t" << bin2HexTbl.Convert16Bin2Hex(binaryInstructions[i]) << "\t\t" << instructions[i] << endl;
+	}
+
+	lstFile << endl << endl << "**** Symbols ****" << endl;
+
+	if (symbols.size() != 0) {
+		for (pair<string, int> symbol : symbols) {
+			lstFile << symbol.second << "\t\t" << symbol.first << endl;
+		}
+	}
+	else {
+		lstFile << "No symbols found" << endl;
+	}
+
+	lstFile << endl << endl << "**** Labels ****" << endl;
+
+	if (labels.size() != 0) {
+		for (pair<string, int> label : labels) {
+			lstFile << label.second << "\t\t" << label.first << endl;
+		}
+	}
+	else {
+		lstFile << "No labels found" << endl;
+	}
+
+	lstFile.close();
+
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double> elapsed = end - start;
+
+	cout << "Assembly Complete \n\t" << "Look for files: \n\t" << outFileName << "\n\t" << outFileName + ".lst" << endl;
+	cout << "Elapsed Time: " << elapsed.count() << endl;
 
 #pragma endregion Pass3
 }
