@@ -18,7 +18,7 @@ map<string, int>::iterator itLabels;
 map<string, int> symbols;
 map<string, int>::iterator itSymbols;
 
-void convertToBinary(int value);
+string convertToBinary(int value);
 
 int main(int argc, char* argv[]) {
 	auto start = std::chrono::high_resolution_clock::now();
@@ -139,35 +139,51 @@ int main(int argc, char* argv[]) {
 		else {
 			// A instructions:
 			string addrName = inst.substr(1, inst.length() - 1);
-			itLabels = labels.find(addrName);
-			itSymbols = symbols.find(addrName);
 
-			// If address exists in neither
-			if (itLabels == labels.end() && itSymbols == symbols.end()) {
-				// Save address of variable to the symbols table
-				symbols.insert(pair<string, int>(addrName, memoryAddress));
-				convertToBinary(memoryAddress);
-
-				// Increment memory address for use with next variable name
-				memoryAddress++;
+			if (isdigit(addrName.at(0))) {
+				int value = stoi(addrName);
+				binaryInstructions.push_back(convertToBinary(value));
 			}
-			// If address exists only in the Labels table
-			else if (itLabels != labels.end() && itSymbols == symbols.end()) {
-				// Get linie number of Label from labels table
-				int lineNumber = itLabels->second;
-
-				convertToBinary(lineNumber);
-			}
-			// If address exists only in the Symbols table
-			else if (itLabels == labels.end() && itSymbols != symbols.end()) {
-				// Get memory adddress of variable from symbols table
-				int addr = itSymbols->second;
-
-				convertToBinary(addr);
-			}
-			// If address exists in both tables (shouldn't happen)
 			else {
-				// WIP
+				itLabels = labels.find(addrName);
+				itSymbols = symbols.find(addrName);
+
+				// If address exists in neither
+				if (itLabels == labels.end() && itSymbols == symbols.end()) {
+					// Save address of variable to the symbols table
+					symbols.insert(pair<string, int>(addrName, memoryAddress));
+					
+					// Converts to binary and writes to binaryInstructions
+					string binStr = convertToBinary(memoryAddress);
+					binaryInstructions.push_back(binStr);
+
+					// Increment memory address for use with next variable name
+					memoryAddress++;
+				}
+				// If address exists only in the labels table
+				else if (itLabels != labels.end() && itSymbols == symbols.end()) {
+					// Get line number of Label from labels table
+					int lineNumber = itLabels->second;
+
+					// Converts to binary and writes to binaryInstructions
+					string binStr = convertToBinary(lineNumber);
+					binaryInstructions.push_back(binStr);
+
+				}
+				// If address exists only in the Symbols table
+				else if (itLabels == labels.end() && itSymbols != symbols.end()) {
+					// Get memory adddress of variable from symbols table
+					int addr = itSymbols->second;
+
+					// Converts to binary and writes to binaryInstructions
+					string binStr = convertToBinary(addr);
+					binaryInstructions.push_back(binStr);
+
+				}
+				// If address exists in both tables (shouldn't happen)
+				else {
+					// WIP
+				}
 			}
 		}
 	}
@@ -226,11 +242,11 @@ int main(int argc, char* argv[]) {
 #pragma endregion Pass3
 }
 
-void convertToBinary(int value) {
+string convertToBinary(int value) {
 	// Convert to binary and write to binaryInstructions vector
 	char symb[16] = { 0 };
 	_itoa_s(value, symb, 2);
 	string str(symb);
 	string binStr = string(16 - str.length(), '0') + str;
-	binaryInstructions.push_back(binStr);
+	return binStr;
 }
