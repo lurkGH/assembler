@@ -134,7 +134,14 @@ int main(int argc, char* argv[]) {
 				prefix = "1000";
 			}
 
-			binaryInstructions.push_back(prefix + compTbl.find(comp) + dstTbl.find(dest) + jmpTbl.find(jump));
+			try {
+				binaryInstructions.push_back(prefix + compTbl.find(comp) + dstTbl.find(dest) + jmpTbl.find(jump));
+			}
+
+			catch(IllegalDestination e) {
+				std::cout << e.what() << endl;
+			}
+
 		}
 		else {
 			// A instructions:
